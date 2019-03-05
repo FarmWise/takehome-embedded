@@ -105,5 +105,5 @@ To write to registers on the board, you must execute a `write()` operation on th
 buffer.
 
 ### List of commands
-The full list of commands supported by the board is documented in the [device manual](Deva001 Manual V24.pdf).
+The full list of commands supported by the board is documented in the [device manual](Deva001%20Manual%20V24.pdf).
 
