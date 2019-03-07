@@ -34,7 +34,7 @@ output, using a format that is defined below.
 * The board has 4 counter channels, and only 2 of them are connected - but unfortunately, you don't know in advance
   which channels are in use and you must autodetect them on startup. What you know is that the encoders are always
   connected in this order: `left wheel`, `right wheel`. In other words, if the `left wheel` is connected to channel `n`,
-  the `right wheel` will always be connected to channel `n+1`.    
+  the `right wheel` will always be connected to channel `n+1`.
 * You must send a status message at a fixed rate as configured on the command line.
 * The robot is assumed to always go straight, but it might deviate slightly from its trajectory. If the distance covered
   by one wheel happens to drift by more than `10%` from the other wheel, you must raise a warning with the code `drift`.
@@ -51,14 +51,14 @@ h - frequency in Hz of the status message, for example 2
 ```
 
 ## Standard Output Protocol
-When printing out messages, your application must use `stdio` and use the following protocol:
+When printing out messages, your application must use `stdout` and use the following protocol:
 * Status message (periodic):
 ```
 $STATUS,distance_left,distance_right,speed_left, speed_right\n
 distance_left - distance covered by the left wheel, in m
 distance_right - distance covered by the right wheel, in m
 speed_left - speed of the left wheel in m/s
-speed_right - speed of the left wheel in m/s  
+speed_right - speed of the left wheel in m/s
 
 example:
 $STATUS,142.5486,142.5477,0.45,0.46
@@ -84,25 +84,28 @@ $ERROR,Encoder failure
 The board shows up under Linux as a Character Device, with the exact path of the device being automatically generated.
 The path to the device will be passed to your application as a command line argument.
 
+
 ### Read from the device
-To read registers from the board, you must execute a `read()` operation on the device, and pass the `command` and 
-`channel` number along in the buffer (the content of the `value` field is ignored). The structure of the request buffer
-is:
-```
-16bit		command
-16bit		channel
-32bit		value
-```
-*Note:* the system used for this exercise is 64-bit Ubuntu (8-byte aligned), little endian.
+To read registers from the board, you must execute a `ioctl()` operation on the device with a custom request (see
+format of that request below), with the `read/write` field of the request set to `0`.
+You must also pass a `buffer` (4 bytes, signed) to store the data returned by the read operation.
 
-
-If the `read()` operation is successful, the `value` field of the buffer is modified to contain the value of the
-selected register.
+If the `ioctl()` operation is successful, the command will return 0 and the `buffer` will modified to contain the value
+of the selected register. On error, -1 is returned.
 
 ### Write to the device
-To write to registers on the board, you must execute a `write()` operation on the device, and pass the `command`,
-`channel` number, and `value` along in the buffer. The structure of the request buffer is the same as the read request
-buffer.
+To read registers from the board, you must execute a `ioctl()` operation on the device with a custom request (see
+format of that request below), with the `read/write` field of the request set to `1`.
+You must also pass a `buffer` (4 bytes, signed) that contains the value to be written on the selected register.
+
+### ioctl request format
+When executing a `ioctl()` operation on the device, the `request` is encoded as such:
+```
+8bit    read/write (0=read, 1=write)
+8bit    command
+16bit   channel
+```
+*Note:* the system used for this exercise is 64-bit Ubuntu (8-byte aligned), little endian.
 
 ### List of commands
 The full list of commands supported by the board is documented in the [device manual](Deva001%20Manual%20V24.pdf).
