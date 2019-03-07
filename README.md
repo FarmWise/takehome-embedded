@@ -5,9 +5,9 @@ Along with a link to this repo, you should have received a link to the submissio
 
 ## Objectives
 You are to build a C, C++ or Python application acting as a client for a PCIe Quadrature Encoder Counter board installed
-in an embedded computer running Ubuntu 16.04 64bit. Connected to the board are 2 quadrature encoders installed in the 
+in an embedded computer running Ubuntu 16.04 64bit. Connected to the board are 2 quadrature encoders installed in the
 rear wheels of a car-like robot, and the  goal of your application is to keep track of the instantaneous speed and total
-distance covered by both wheels. 
+distance covered by both wheels.
 
 Your application will be run as a service by another program: it will act as a proxy between the encoders and other
 components of the robot framework. Your application is expected to periodically report its status to the standard
@@ -30,7 +30,7 @@ output, using a format that is defined below.
 
 ## Technical Requirements
 * The encoders are Quadrature A/B, and both A and B signals are inverted. The ticks to distance over ground ratio is
-  `100 ticks = 1 meter`. 
+  `100 ticks = 1 meter`.
 * The board has 4 counter channels, and only 2 of them are connected - but unfortunately, you don't know in advance
   which channels are in use and you must autodetect them on startup. What you know is that the encoders are always
   connected in this order: `left wheel`, `right wheel`. In other words, if the `left wheel` is connected to channel `n`,
@@ -42,9 +42,9 @@ output, using a format that is defined below.
 * All warning messages must be latched: they must only be sent once per occurrence, and they must re-arm when the
   root cause is resolved.
 * You must monitor the status of the encoders at all time, and report any problem with an appropriate error message.
-* Your application will be started with the following command line arguments: 
+* Your application will be started with the following command line arguments:
 ```
--d [dev] -h [hz] 
+-d [dev] -h [hz]
 where:
 d - path to the character device to use (see SDK), for example /dev/device
 h - frequency in Hz of the status message, for example 2
@@ -52,11 +52,19 @@ h - frequency in Hz of the status message, for example 2
 
 ## Standard Output Protocol
 When printing out messages, your application must use `stdout` and use the following protocol:
+* Ready message (once):
+```
+$READY\n
+to be sent once, at startup, when your application is ready to process the encoders
+
+example:
+$READY
+```
 * Status message (periodic):
 ```
 $STATUS,distance_left,distance_right,speed_left, speed_right\n
-distance_left - distance covered by the left wheel, in m
-distance_right - distance covered by the right wheel, in m
+distance_left - distance covered by the left wheel since your application started, in m
+distance_right - distance covered by the right wheel since your application stared, in m
 speed_left - speed of the left wheel in m/s
 speed_right - speed of the left wheel in m/s
 
@@ -109,4 +117,3 @@ When executing a `ioctl()` operation on the device, the `request` is encoded as 
 
 ### List of commands
 The full list of commands supported by the board is documented in the [device manual](Deva001%20Manual%20V24.pdf).
-
