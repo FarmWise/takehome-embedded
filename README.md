@@ -55,11 +55,14 @@ When printing out messages, your application must use `stdout` and use the follo
 * Ready message (once):
 ```
 $READY\n
-to be sent once, at startup, when your application is ready to process the encoders
+to be sent once, at startup, when your application has finished initializing and is ready to process the
+encoder values
 
 example:
 $READY
 ```
+Note: this message will effectively start the unit tests.
+
 * Status message (periodic):
 ```
 $STATUS,distance_left,distance_right,speed_left, speed_right\n
@@ -117,3 +120,47 @@ When executing a `ioctl()` operation on the device, the `request` is encoded as 
 
 ### List of commands
 The full list of commands supported by the board is documented in the [device manual](Deva001%20Manual%20V24.pdf).
+
+### Function compatibility
+Because your application is being tested in a simulation, some board features are not available.
+This table supplements the one printed on pages 20 of the device manual.
+
+No. | Equate         | Board issue 5.0+ | Test environment
+--- | -------------- | ---------------- | ----------------
+0   | VECTOR         | No               | No
+1   | NUM_AXES       | 3, channel 0..2  | 4, channel 0..3
+2   | NUM_TIMERS     | 2, timer 1 user  | 0
+3   | NUM_INPUTS     | 0                | 0
+4   | NUM_DACS       | 0                | 0
+5   | NUM_OUTPUTS    | 0                | 0
+7   | NUM_BOARDS     | Number of cards  | 1
+8   | CARD_TYPE      | Yes              | Yes
+9   | VERSION_NUM    | Yes              | Yes
+10  | CNT_16         | Yes              | No
+11  | MODE           | INC or SSI mode  | INC mode
+12  | AXIS_SIZE      | 2 x 16 bits      | 2 x 16 bits
+13  | ENCODER_TYPE   | Yes              | Yes
+14  | AXIS_INPUTS    | Yes              | Yes
+15  | AXIS_STATUS    | Yes              | Yes
+16  | AXIS_OUT_EN    | Yes              | No
+20  | MARK_16        | Yes              | No
+21  | MARK_INPUT     | Yes              | No
+22  | MARK_INT       | Yes              | No
+23  | MARK_FUNC      | Yes              | No
+24  | MARK_INT_VECT  | Yes              | No
+25  | MARK_INT_OCCUR | Yes              | No
+26  | MARK_LATCH_SEL | Yes              | No
+27  | MARK_OUT_EN    | Yes              | No
+30  | ZERO_INPUT     | Yes              | No
+31  | ZERO_INT       | Yes              | No
+32  | ZERO_FUNC      | Yes              | No
+33  | ZERO_INT_VECT  | Yes              | No
+34  | ZERO_INT_OCCUR | Yes              | No
+40  | AXIS_32        | Yes              | Yes
+41  | MARK_32        | Yes              | No
+42  | VEL_INST       | Yes              | No
+43  | VEL_FILT       | Yes              | No
+44  | ACCEL_INST     | Yes              | No
+45  | ACCEL_FILT     | Yes              | No
+46  | PROBE_32       | Yes              | No
+47  | ABSOLUTE_32    | Yes              | No
