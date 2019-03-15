@@ -99,7 +99,7 @@ The path to the device will be passed to your application as a command line argu
 ### Read from the device
 To read registers from the board, you must execute a `ioctl()` operation on the device with a custom request (see
 format of that request below), with the `read/write` field of the request set to `0`.
-You must also pass a `buffer` (8 bytes, signed) to store the data returned by the read operation.
+You must also pass a `buffer` (4 bytes, signed) to store the data returned by the read operation.
 
 If the `ioctl()` operation is successful, the command will return 0 and the `buffer` will modified to contain the value
 of the selected register. On error, -1 is returned.
@@ -107,7 +107,7 @@ of the selected register. On error, -1 is returned.
 ### Write to the device
 To read registers from the board, you must execute a `ioctl()` operation on the device with a custom request (see
 format of that request below), with the `read/write` field of the request set to `1`.
-You must also pass a `buffer` (8 bytes, signed) that contains the value to be written on the selected register.
+You must also pass a `buffer` (4 bytes, signed) that contains the value to be written on the selected register.
 
 ### ioctl request format
 When executing a `ioctl()` operation on the device, the `request` is encoded as such:
