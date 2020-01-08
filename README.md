@@ -91,6 +91,8 @@ example:
 $ERROR,Encoder failure
 ```
 
+**Note regarding debuging:** Any line outputed by your application that starts with a `$` will be treated as a command, and not be displayed in the logs. Correspondingly, lines that do not start by a `$` are treated as debug output, and displayed back to you without processing.
+
 ## Board SDK
 The board shows up under Linux as a Character Device, with the exact path of the device being automatically generated.
 The path to the device will be passed to your application as a command line argument.
